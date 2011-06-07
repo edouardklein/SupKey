@@ -82,6 +82,8 @@ public class SupKey extends InputMethodService
     
     private String[] mDictionary = null;
 
+    private HashMap mVoisins;
+
     /**
      * Main initialization of the input method component.  Be sure to call
      * to super class.
@@ -115,8 +117,37 @@ public class SupKey extends InputMethodService
 	// loop and display each word from the words array
 	//for( int i = 0; i < mDictionary.length; i++ )
 	    //Log.d( "SupKey", mDictionary[ i ] );
+
+	HashMap mVoisins = new HashMap();
+	
+	
+	mVoisins.put("q","[aswq]");
+	mVoisins.put("w","[wqase]");
+	mVoisins.put("e","[ewsdr]");
+	mVoisins.put("r","[redft]");
+	mVoisins.put("t","[rtfgy]");
+	mVoisins.put("y","[ytghu]");
+	mVoisins.put("u","[uyhji]");
+	mVoisins.put("i","[iujko]");	
+	mVoisins.put("o","[oiklp]");
+	mVoisins.put("p","[pol]");
+	mVoisins.put("a","[qwasz]");
+	mVoisins.put("s","[weasdzx]");
+	mVoisins.put("d","[ersdfzxc]");
+	mVoisins.put("f","[rtdfgxcv]");
+	mVoisins.put("g","[fghcvbtyu]");
+	mVoisins.put("h","[yuighjvbn]");	
+	mVoisins.put("j","[uiohjqbnm]");
+	mVoisins.put("k","[iopjklnm]");
+	mVoisins.put("l","[opklm]");
+	mVoisins.put("z","[asdzx]");
+	mVoisins.put("x","[sdfzxc]");
+	mVoisins.put("c","[dfgxcv]");
+	mVoisins.put("v","[fghcvb]");
+	mVoisins.put("n","[hjkbnm]");
+	mVoisins.put("b","[ghjvbn]");
+	mVoisins.put("m","[jklnm]");
     }
-    
     /**
      * This is the point where you can do all of your UI initialization.  It
      * is called after creation and any configuration change.
@@ -590,12 +621,15 @@ public class SupKey extends InputMethodService
         if (!mCompletionOn) {
             if (mComposing.length() > 0) {
                 ArrayList<String> list = new ArrayList<String>();
-		String regexp = "^"+(mComposing.toString());
-		
-		int resID = getResources().getIdentifier.("fr.supelec.android.keyboard:values/"+"q",null,null);
-		String voisins = getString(resID);
+		String soFar = mComposing.toString();
+		String regexp = "^";
 
-		Log.d( "SupKey", "\t"+"Voisins de Q "+voisins );
+		int k;
+		char 
+		for(k=0; k<soFar.length();k++)
+		    {
+			regexp = regexp+ mVoisins.get(soFar.charAt(k));
+		    }
 		Pattern p = Pattern.compile(regexp);
 		int counter=0;
 		for( int i = 0; i < mDictionary.length && counter<6; i++ ){
