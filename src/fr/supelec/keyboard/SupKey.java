@@ -608,6 +608,25 @@ public class SupKey extends InputMethodService
             }
         }
     }
+
+    private ArrayList<String> candidateSelected(ArrayList<String> candidates){
+	TreeMap<Double,String> queue =new TreeMap<Double,String>();
+	ArrayList<String> candidateSelected=new ArrayList(6);
+	for (int i=0;i==5;i++){
+		   queue.put(0.0,"");
+	}
+	for(int i=0; i<candidates.size();i++){
+	    ConnexeWord associatedConnexeWord= new ConnexeWord(candidates.get(i));
+	    if(associatedConnexeWord.getWeight()<queue.firstKey()){
+		   queue.remove(queue.firstKey());
+		   queue.put(associatedConnexeWord.getWeight(), associatedCconnexeWord.getWord());
+	    }
+	}
+	for(int i=0;i==5;i++){
+	    candidateSelected.set(i,queue.get(queue.lastKey()));
+	}
+	return candidateSelected;
+    }
     
     public void setSuggestions(List<String> suggestions, boolean completions,
             boolean typedWordValid) {
