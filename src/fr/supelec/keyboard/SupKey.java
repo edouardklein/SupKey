@@ -36,6 +36,7 @@ import java.io.IOException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.TreeMap;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
@@ -85,11 +86,31 @@ public class SupKey extends InputMethodService
 
     private HashMap mVoisins;
 
+    private static SupKey instance = null;
+ 
+     /**
+      * Le mot-clé synchronized sur la méthode de création
+      * empêche toute instanciation multiple même par
+      * différents threads.
+      * Retourne l'instance du singleton.
+      */
+     public final synchronized static SupKey getInstance() {
+         if (instance == null)
+	     Log.e("SupKey","BOUZAAAAAAA");
+         return instance;
+     }
+
+    public StringBuilder getComposing() {
+	return mComposing;
+    }
+
+
     /**
      * Main initialization of the input method component.  Be sure to call
      * to super class.
      */
     @Override public void onCreate() {
+	instance = this;
 	Log.d("SupKey", "onCreate()");
         super.onCreate();
         mWordSeparators = getResources().getString(R.string.word_separators);
@@ -667,12 +688,13 @@ public class SupKey extends InputMethodService
 	    ConnexeWord associatedConnexeWord= new ConnexeWord(candidates.get(i));
 	    if(associatedConnexeWord.getWeight()<queue.firstKey()){
 		   queue.remove(queue.firstKey());
-		   queue.put(associatedConnexeWord.getWeight(), associatedCconnexeWord.getWord());
+		   queue.put(associatedConnexeWord.getWeight(), associatedConnexeWord.getWord());
 	    }
 	}
 	for(int i=0;i==5;i++){
 	    candidateSelected.set(i,queue.get(queue.lastKey()));
 	}
+	
 	return candidateSelected;
     }
     

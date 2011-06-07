@@ -1,29 +1,27 @@
 //Source file: U:\\PROJET\\WeightFunction.java
+package fr.supelec.keyboard;
+
 
 import java.lang.Math;
 
 public class WeightFunction 
 {
-   private double alpha;
-   private double beta;
-   private double gamma;
-   private TypingSequence typingSequence;
+   private double alpha = 1;
+   private double beta = 1;
+   private double gamma = 1;
+    private String word = null;
+
+   public WeightFunction( String word ) 
+    {
+	word = word;
+    }
    
 
-   public WeightFunction(double anAlpha, double aBeta, double aGamma) 
+   public double getWeight() 
    {
-   alpha=anAlpha;
-   beta=aBeta;
-   gamma=aGamma;
-   
+       Distance dis = new Distance( word );
+       double d=dis.getCorrectedDistance();
+       double f = DictionaryOfFrequency.getInstance().getFrequency( word );
+       return (Math.exp(alpha*Math.log((double)(f))))/(1+Math.exp(gamma*Math.log(beta*((d)))));
    }
-   
-
-   public double weight(ConnexeWord connexeWord) 
-   {
-       Distance d=connexeWord.getDistance();
-
-       return (Math.exp(alpha*Math.log((double)(dictionaryOfFrequency.getFrequency(connexeWord.getWord())))))/(1+Math.exp(aGamma*Math.log(beta*((d.getCorrectedDistance())))));
-
-     }
 }

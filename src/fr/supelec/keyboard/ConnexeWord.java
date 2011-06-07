@@ -1,60 +1,28 @@
 //Source file: U:\\PROJET\\ConnexeWord.java
-
+package fr.supelec.keyboard;
 
 public class ConnexeWord 
 {
-   private String word;
-   private double distanceFromTypingSequence;
-   private int frequency;
-   private Double weight;
-   public WeightFunction theWeightFunction;
-   public Distance theDistance;
-   
-
-   public ConnexeWord() 
-   {
-    setDistanceFromTypingSequence();
-    setFrequency();
-    setWeight();
-    updateQueue();
-   }
+    private String word;
+    private WeightFunction theWeightFunction;
     
-    public Distance getDistance(){
-	return theDistance;
+    
+    public ConnexeWord( String _word ) 
+    {
+       word = _word;
+       theWeightFunction = new WeightFunction( word );
     }
-
+    
    public String getWord(){
 	   return word;
    }
-
-   public void setDistanceFromTypingSequence() 
-   {
-    distanceFromTypingSequence=theDistance.correctedDistance(this);
-   }
    
-   public double getDistanceFromTypingSequence(){
-	   return distanceFromTypingSequence;
-   }
-
-   public void setFrequency() 
-   {
-    
-   }
+   // public void setWeight() 
+   // {
+   //     theWeightFunction.weight( word );
+   // }
    
-   public int getFrequency(){
-	   return frequency;
-   }
-
-   public void setWeight() 
-   {
-    theWeightFunction.weight(this);
-   }
-   
-   public Double getWeight(){
-	   return weight;
-   }
-   public void updateQueue() 
-   {
-    
-   }
+    public double getWeight(){
+	return theWeightFunction.getWeight();
+    }
 }

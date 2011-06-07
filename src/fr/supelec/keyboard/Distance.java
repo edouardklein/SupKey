@@ -1,36 +1,42 @@
 //Source file: U:\\PROJET\\Distance.java
+package fr.supelec.keyboard;
 
 import java.lang.Math;
 
 public class Distance 
 {
-   private int distance=0;
-   private StringBuilder taping=Supkey.getInstance().getComposite();
-   private double numberOfMistakes;
-   public Distance() 
-   {
-    
+    private int distance=0;
+    private StringBuilder typing=null;
+    private double numberOfMistakes;
+    private String word = null;
+
+   public Distance( String _word ) 
+    {
+	word = _word;
+	typing = SupKey.getInstance().getComposing();
+	setDistance();
+	setNumberOfMistakes();
    }
    
 
-   public void setDistance(ConnexeWord connexeWord) 
+   public void setDistance() 
    {
-	   distance=0;
-	   for (int i=0;i<taping.size();i++){
-    	if(connexeWord.getWord().charAt(i)==(taping.charAt(i))){
-    		distance++;
+       distance=0;
+       for (int i=0;i<typing.length();i++){
+	   if(word.charAt(i)!=(typing.charAt(i))){
+	       distance++;
+	   }
+       }
+   }
+    
+    public void setNumberOfMistakes(){
+	for (int i=0;i<typing.length();i++){
+	    numberOfMistakes=+Stat.getInstance().mistakes((typing.charAt(i)));	    
     	}
     }
-   }
-   
-    public void setNumberOfMistakes(){
-	for (int i=0;i<taping.size();i++){
-	    numberOfMistakes=+theStat(taping.CharAt(i));	    
-    	}
 
-   public double correctedDistance(ConnexeWord connexeWord) 
+   public double getCorrectedDistance() 
    {
-	setDistance(connexeWord);
-    return Math.abs(taping.getNumberOfMistakes()- (double) distance);
+       return Math.abs(numberOfMistakes - (double) distance);
    }
 }

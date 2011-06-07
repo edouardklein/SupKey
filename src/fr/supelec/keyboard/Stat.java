@@ -1,12 +1,31 @@
 //Source file: U:\\PROJET\\Stat.java
+package fr.supelec.keyboard;
+
 import java.util.HashMap;
 
 public class Stat 
 {
    
-	private HashMap<Character,Double> theStat;
+    private static Stat instance = null;
+ 
+ 
+     /**
+      * Le mot-clé synchronized sur la méthode de création
+      * empêche toute instanciation multiple même par
+      * différents threads.
+      * Retourne l'instance du singleton.
+      */
+     public final synchronized static Stat getInstance() {
+         if (instance == null) 
+             instance = new Stat();
+         return instance;
+     }
+ 
+
+
+    private HashMap<Character,Double> theStat;
 	
-   public Stat() 
+    private Stat() 
    {
     theStat=new HashMap <Character, Double> ();
    
