@@ -35,6 +35,7 @@ import java.io.FileReader;
 import java.io.IOException;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
@@ -118,7 +119,7 @@ public class SupKey extends InputMethodService
 	//for( int i = 0; i < mDictionary.length; i++ )
 	    //Log.d( "SupKey", mDictionary[ i ] );
 
-	HashMap mVoisins = new HashMap();
+	mVoisins = new HashMap();
 	
 	
 	mVoisins.put("q","[aswq]");
@@ -625,19 +626,27 @@ public class SupKey extends InputMethodService
 		String regexp = "^";
 
 		int k;
-		char 
 		for(k=0; k<soFar.length();k++)
 		    {
-			regexp = regexp+ mVoisins.get(soFar.charAt(k));
+			char c = soFar.charAt(k);
+			String key = Character.toString(c);
+			Log.d( "SupKey", "\t Key is"+ key );
+			if( mVoisins.containsKey( key )){
+			    String voisin = (String)(mVoisins.get(key));
+			    regexp = regexp+ voisin;
+			}else{
+			    Log.d( "SupKey", "\t Voisin est null"); 
+			}
 		    }
+		Log.d( "SupKey", "\t Regexp : "+regexp );
 		Pattern p = Pattern.compile(regexp);
 		int counter=0;
 		for( int i = 0; i < mDictionary.length && counter<6; i++ ){
 		    Matcher m = p.matcher(mDictionary[ i ] );
-		    Log.d( "SupKey", "\t"+mDictionary[ i ] );
+		    //    Log.d( "SupKey", "\t"+mDictionary[ i ] );
 		    if( m.find() ){
 			list.add( mDictionary[ i ] );
-			Log.d( "SupKey", "\t"+"matche !" );
+			//	Log.d( "SupKey", "\t"+"matche !" );
 			counter++;
 		    }
 		}
