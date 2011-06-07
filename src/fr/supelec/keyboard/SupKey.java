@@ -35,6 +35,7 @@ import java.io.FileReader;
 import java.io.IOException;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
@@ -82,6 +83,8 @@ public class SupKey extends InputMethodService
     
     private String[] mDictionary = null;
 
+    private HashMap mVoisins;
+
     /**
      * Main initialization of the input method component.  Be sure to call
      * to super class.
@@ -91,17 +94,17 @@ public class SupKey extends InputMethodService
         super.onCreate();
         mWordSeparators = getResources().getString(R.string.word_separators);
 	
-	mDictionary = new String[ 3000 ];
+	mDictionary = new String[ 1000 ];
 	// will store the words read from the file
 	BufferedReader br = null;
 	int i = 0;
 	try {
 	    // attempt to open the words file
 	    br = new BufferedReader(new InputStreamReader(getAssets().open ("francais.mp3")));
-	    for( i=0; i<3000 ; i++ ){
+	    for( i=0; i<1000 ; i++ ){
 		mDictionary[ i ] = br.readLine();
-		Log.d( "SupKey", " "+i );
 	    }
+	    Log.d( "SupKey", " dico read" );
 	} catch( IOException e ) {
 	    Log.e("SupKey", "onCreate() error while reading, "+i+" mots lus, "+e.toString());
 	} finally {
@@ -115,8 +118,37 @@ public class SupKey extends InputMethodService
 	// loop and display each word from the words array
 	//for( int i = 0; i < mDictionary.length; i++ )
 	    //Log.d( "SupKey", mDictionary[ i ] );
+
+	mVoisins = new HashMap();
+	
+	
+	mVoisins.put("q","[aswq]");
+	mVoisins.put("w","[wqase]");
+	mVoisins.put("e","[ewsdr]");
+	mVoisins.put("r","[redft]");
+	mVoisins.put("t","[rtfgy]");
+	mVoisins.put("y","[ytghu]");
+	mVoisins.put("u","[uyhji]");
+	mVoisins.put("i","[iujko]");	
+	mVoisins.put("o","[oiklp]");
+	mVoisins.put("p","[pol]");
+	mVoisins.put("a","[qwasz]");
+	mVoisins.put("s","[weasdzx]");
+	mVoisins.put("d","[ersdfzxc]");
+	mVoisins.put("f","[rtdfgxcv]");
+	mVoisins.put("g","[fghcvbtyu]");
+	mVoisins.put("h","[yuighjvbn]");	
+	mVoisins.put("j","[uiohjqbnm]");
+	mVoisins.put("k","[iopjklnm]");
+	mVoisins.put("l","[opklm]");
+	mVoisins.put("z","[asdzx]");
+	mVoisins.put("x","[sdfzxc]");
+	mVoisins.put("c","[dfgxcv]");
+	mVoisins.put("v","[fghcvb]");
+	mVoisins.put("n","[hjkbnm]");
+	mVoisins.put("b","[ghjvbn]");
+	mVoisins.put("m","[jklnm]");
     }
-    
     /**
      * This is the point where you can do all of your UI initialization.  It
      * is called after creation and any configuration change.
@@ -590,15 +622,31 @@ public class SupKey extends InputMethodService
         if (!mCompletionOn) {
             if (mComposing.length() > 0) {
                 ArrayList<String> list = new ArrayList<String>();
-		String regexp = "^"+(mComposing.toString());
+		String soFar = mComposing.toString();
+		String regexp = "^";
+
+		int k;
+		for(k=0; k<soFar.length();k++)
+		    {
+			char c = soFar.charAt(k);
+			String key = Character.toString(c);
+			Log.d( "SupKey", "\t Key is"+ key );
+			if( mVoisins.containsKey( key )){
+			    String voisin = (String)(mVoisins.get(key));
+			    regexp = regexp+ voisin;
+			}else{
+			    Log.d( "SupKey", "\t Voisin est null"); 
+			}
+		    }
+		Log.d( "SupKey", "\t Regexp : "+regexp );
 		Pattern p = Pattern.compile(regexp);
 		int counter=0;
 		for( int i = 0; i < mDictionary.length && counter<6; i++ ){
 		    Matcher m = p.matcher(mDictionary[ i ] );
-		    Log.d( "SupKey", "\t"+mDictionary[ i ] );
+		    //    Log.d( "SupKey", "\t"+mDictionary[ i ] );
 		    if( m.find() ){
 			list.add( mDictionary[ i ] );
-			Log.d( "SupKey", "\t"+"matche !" );
+			//	Log.d( "SupKey", "\t"+"matche !" );
 			counter++;
 		    }
 		}
