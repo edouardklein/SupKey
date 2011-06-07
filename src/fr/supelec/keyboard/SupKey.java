@@ -591,6 +591,11 @@ public class SupKey extends InputMethodService
             if (mComposing.length() > 0) {
                 ArrayList<String> list = new ArrayList<String>();
 		String regexp = "^"+(mComposing.toString());
+		
+		int resID = getResources().getIdentifier.("fr.supelec.android.keyboard:values/"+"q",null,null);
+		String voisins = getString(resID);
+
+		Log.d( "SupKey", "\t"+"Voisins de Q "+voisins );
 		Pattern p = Pattern.compile(regexp);
 		int counter=0;
 		for( int i = 0; i < mDictionary.length && counter<6; i++ ){
