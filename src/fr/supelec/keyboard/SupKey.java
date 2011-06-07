@@ -91,17 +91,17 @@ public class SupKey extends InputMethodService
         super.onCreate();
         mWordSeparators = getResources().getString(R.string.word_separators);
 	
-	mDictionary = new String[ 3000 ];
+	mDictionary = new String[ 1000 ];
 	// will store the words read from the file
 	BufferedReader br = null;
 	int i = 0;
 	try {
 	    // attempt to open the words file
 	    br = new BufferedReader(new InputStreamReader(getAssets().open ("francais.mp3")));
-	    for( i=0; i<3000 ; i++ ){
+	    for( i=0; i<1000 ; i++ ){
 		mDictionary[ i ] = br.readLine();
-		Log.d( "SupKey", " "+i );
 	    }
+	    Log.d( "SupKey", " dico read" );
 	} catch( IOException e ) {
 	    Log.e("SupKey", "onCreate() error while reading, "+i+" mots lus, "+e.toString());
 	} finally {
