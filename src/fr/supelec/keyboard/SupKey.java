@@ -86,7 +86,6 @@ public class SupKey extends InputMethodService
 
     private HashMap mVoisins;
     private ArrayList<String> mList = null;
-    private String regexp = "^";
 
     private static SupKey instance = null;
  
@@ -230,7 +229,6 @@ public class SupKey extends InputMethodService
         // the underlying state of the text editor could have changed in any way.
         mComposing.setLength(0);
 	mList = null;
-	regexp = "^";
         updateCandidates();
         
         if (!restarting) {
@@ -322,7 +320,6 @@ public class SupKey extends InputMethodService
         // Clear current composing text and candidates.
         mComposing.setLength(0);
 	mList = null;
-	regexp = "^":
         updateCandidates();
         
         // We only hide the candidates window when finishing input on
@@ -361,7 +358,6 @@ public class SupKey extends InputMethodService
                 || newSelEnd != candidatesEnd)) {
             mComposing.setLength(0);
 	    mList = null;
-	    regexp = "^";
             updateCandidates();
             InputConnection ic = getCurrentInputConnection();
             if (ic != null) {
@@ -425,8 +421,6 @@ public class SupKey extends InputMethodService
                 c = composed;
                 mComposing.setLength(mComposing.length()-1);
 		 mList = null;
-		 regexp = "^";
-		 //??
             }
         }
         
@@ -532,7 +526,6 @@ public class SupKey extends InputMethodService
             inputConnection.commitText(mComposing, mComposing.length());
             mComposing.setLength(0);
 	    mList = null;
-	    regexp = "^";
             updateCandidates();
         }
     }
@@ -654,76 +647,60 @@ public class SupKey extends InputMethodService
     private void updateCandidates() {
 	Log.d("SupKey", "updateCandidates()");
         if (!mCompletionOn) {
-	    if (mList = null && mComposing.length()>0)  {
-		String soFar = mComposing.toString();
-		
-		int k;
-		for(k=0; k<soFar.length();k++)
-		    {
-			char c = soFar.charAt(k);
-			String key = Character.toString(c);
-			Log.d( "SupKey", "\t Key is"+ key );
-			if( mVoisins.containsKey( key )){
-			    String voisin = (String)(mVoisins.get(key));
-			    regexp = regexp+ voisin;
-			} else {
-			    Log.d( "SupKey", "\t Voisin est null"); 
-			}
-		    }
-		Log.d( "SupKey", "\t Regexp : "+regexp );
-		Pattern p = Pattern.compile(regexp);
+	    String regexp = "^";
+	    String soFar = mComposing.toString();
+	    for( int k=0; k<soFar.length();k++){
+		char c = soFar.charAt(k);
+		String key = Character.toString(c);
+		Log.d( "SupKey", "\t Key is"+ key );
+		if( mVoisins.containsKey( key )){
+		    String voisin = (String)(mVoisins.get(key));
+		    regexp = regexp+ voisin;
+		} else {
+		    Log.w( "SupKey", "\t Voisin est null"); 
+		}
+	    }
+	    Log.d( "SupKey", "\t Regexp : "+regexp );
+	    Pattern p = Pattern.compile(regexp);
+	    if (mList == null)  {
+		mList = new ArrayList<String>();
+		ArrayList<String> suggestions = new ArrayList<String>();
 		int counter=0;
-
-		for( int i = 0; i < mDictionary.length && counter<6; i++ ){
+		for( int i = 0; i < mDictionary.length; i++ ){
 		    Matcher m = p.matcher(mDictionary[ i ] );
 		    //    Log.d( "SupKey", "\t"+mDictionary[ i ] );
 		    if( m.find() ){
 			mList.add( mDictionary[ i ] );
 			//	Log.d( "SupKey", "\t"+"matche !" );
+			if( counter < 6 ){
+			    suggestions.add( mDictionary[ i ] );
+			}
 			counter++;
 		    }
 		}
-
-                setSuggestions(mList, true, true);
-	 
-
+                setSuggestions(suggestions, true, true);
             } else {
-		if(mComposing.length()>1 && mList <> null) {
-
-		    ArrayList<String> copie = mList.clone();
-		    mList = null;
-		    
-		    char c = soFar.charAt(mComposing.length()-1);
-		     String key = Character.toString(c);
-
-		     if( mVoisins.containsKey( key )){
-			    String voisin = (String)(mVoisins.get(key));
-			    regexp = regexp+ voisin;
-			} else {
-			    Log.d( "SupKey", "\t Voisin est null"); 
-			}
-
-		     Log.d( "SupKey", "\t Regexp : "+regexp );
-		    Pattern p = Pattern.compile(regexp);
-		    int counter=0;
-
-		    for( int i = 0; i < copie.length() && counter<6; i++ ){
-		    
-		     Matcher m = p.matcher(copie[ i ]);
+		ArrayList<String> copie = (ArrayList<String>)(mList.clone());
+		mList = new ArrayList<String>();
+		ArrayList<String> suggestions = new ArrayList<String>();
+		int counter=0;		
+		for( int i = 0; i < copie.size(); i++ ){
+		    Matcher m = p.matcher(copie.get( i ));
 		    //    Log.d( "SupKey", "\t"+mDictionary[ i ] );
 		    if( m.find() ){
-			mList.add( copie[ i ],mList.length()-1 );
+			mList.add( copie.get( i ) );
 			//	Log.d( "SupKey", "\t"+"matche !" );
-			counter++;
-		        }  
-		        }  
-		    setSuggestions(mList, true, true);
-	    
-		}
-		else{
-
-                setSuggestions(null, false, false);
-            }
+			if( counter < 6 ){
+			    suggestions.add( copie.get( i ) );
+			}
+			counter++;			
+		    }  
+		}  
+		setSuggestions(suggestions, true, true);
+		
+	    }
+	}else{
+	    setSuggestions(null, false, false);
         }
     }
 
@@ -766,13 +743,11 @@ public class SupKey extends InputMethodService
         if (length > 1) {
             mComposing.delete(length - 1, length);
 	    mList = null;
-	    regexp = "^";
             getCurrentInputConnection().setComposingText(mComposing, 1);
             updateCandidates();
         } else if (length > 0) {
             mComposing.setLength(0);
 	    mList = null;
-	    regexp = "^";
             getCurrentInputConnection().commitText("", 0);
             updateCandidates();
         } else {
@@ -875,7 +850,6 @@ public class SupKey extends InputMethodService
 	    getCurrentInputConnection().commitText( s, s.length() );
 	    mComposing.setLength(0);
 	    mList = null;
-	    regexp = "^";
 	    updateCandidates();
         }
     }
