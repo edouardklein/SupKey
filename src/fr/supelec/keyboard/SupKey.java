@@ -647,61 +647,62 @@ public class SupKey extends InputMethodService
     private void updateCandidates() {
 	Log.d("SupKey", "updateCandidates()");
         if (!mCompletionOn) {
-	    String regexp = "^";
-	    String soFar = mComposing.toString();
-	    for( int k=0; k<soFar.length();k++){
-		char c = soFar.charAt(k);
-		String key = Character.toString(c);
-		Log.d( "SupKey", "\t Key is"+ key );
-		if( mVoisins.containsKey( key )){
-		    String voisin = (String)(mVoisins.get(key));
-		    regexp = regexp+ voisin;
-		} else {
-		    Log.w( "SupKey", "\t Voisin est null"); 
-		}
-	    }
-	    Log.d( "SupKey", "\t Regexp : "+regexp );
-	    Pattern p = Pattern.compile(regexp);
-	    if (mList == null)  {
-		mList = new ArrayList<String>();
-		ArrayList<String> suggestions = new ArrayList<String>();
-		int counter=0;
-		for( int i = 0; i < mDictionary.length; i++ ){
-		    Matcher m = p.matcher(mDictionary[ i ] );
-		    //    Log.d( "SupKey", "\t"+mDictionary[ i ] );
-		    if( m.find() ){
-			mList.add( mDictionary[ i ] );
-			//	Log.d( "SupKey", "\t"+"matche !" );
-			if( counter < 6 ){
-			    suggestions.add( mDictionary[ i ] );
-			}
-			counter++;
+	    if (mComposing.length() > 0) {
+		String regexp = "^";
+		String soFar = mComposing.toString();
+		for( int k=0; k<soFar.length();k++){
+		    char c = soFar.charAt(k);
+		    String key = Character.toString(c);
+		    Log.d( "SupKey", "\t Key is"+ key );
+		    if( mVoisins.containsKey( key )){
+			String voisin = (String)(mVoisins.get(key));
+			regexp = regexp+ voisin;
+		    } else {
+			Log.w( "SupKey", "\t Voisin est null"); 
 		    }
 		}
-                setSuggestions(suggestions, true, true);
-            } else {
-		ArrayList<String> copie = (ArrayList<String>)(mList.clone());
-		mList = new ArrayList<String>();
-		ArrayList<String> suggestions = new ArrayList<String>();
-		int counter=0;		
-		for( int i = 0; i < copie.size(); i++ ){
-		    Matcher m = p.matcher(copie.get( i ));
-		    //    Log.d( "SupKey", "\t"+mDictionary[ i ] );
-		    if( m.find() ){
-			mList.add( copie.get( i ) );
-			//	Log.d( "SupKey", "\t"+"matche !" );
-			if( counter < 6 ){
-			    suggestions.add( copie.get( i ) );
+		Log.d( "SupKey", "\t Regexp : "+regexp );
+		Pattern p = Pattern.compile(regexp);
+		if (mList == null)  {
+		    mList = new ArrayList<String>();
+		    ArrayList<String> suggestions = new ArrayList<String>();
+		    int counter=0;
+		    for( int i = 0; i < mDictionary.length; i++ ){
+			Matcher m = p.matcher(mDictionary[ i ] );
+			//    Log.d( "SupKey", "\t"+mDictionary[ i ] );
+			if( m.find() ){
+			    mList.add( mDictionary[ i ] );
+			    //	Log.d( "SupKey", "\t"+"matche !" );
+			    if( counter < 6 ){
+				suggestions.add( mDictionary[ i ] );
+			    }
+			    counter++;
 			}
-			counter++;			
+		    }
+		    setSuggestions(suggestions, true, true);
+		} else {
+		    ArrayList<String> copie = (ArrayList<String>)(mList.clone());
+		    mList = new ArrayList<String>();
+		    ArrayList<String> suggestions = new ArrayList<String>();
+		    int counter=0;		
+		    for( int i = 0; i < copie.size(); i++ ){
+			Matcher m = p.matcher(copie.get( i ));
+			//    Log.d( "SupKey", "\t"+mDictionary[ i ] );
+			if( m.find() ){
+			    mList.add( copie.get( i ) );
+			    //	Log.d( "SupKey", "\t"+"matche !" );
+			    if( counter < 6 ){
+				suggestions.add( copie.get( i ) );
+			    }
+			    counter++;			
+			}  
 		    }  
-		}  
-		setSuggestions(suggestions, true, true);
-		
+		    setSuggestions(suggestions, true, true);
+		}
+	    }else{
+		setSuggestions(null, false, false);
 	    }
-	}else{
-	    setSuggestions(null, false, false);
-        }
+	}
     }
 
     private ArrayList<String> candidateSelected(ArrayList<String> candidates){
