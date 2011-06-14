@@ -4,13 +4,12 @@ package fr.supelec.keyboard;
 public class ConnexeWord 
 {
     private String word;
-    private WeightFunction theWeightFunction;
-    
-    
+
+  
     public ConnexeWord( String _word ) 
     {
        word = _word;
-       theWeightFunction = new WeightFunction( word );
+       
     }
     
    public String getWord(){
@@ -22,7 +21,7 @@ public class ConnexeWord
    //     theWeightFunction.weight( word );
    // }
    
-    public double getWeight(){
-	return theWeightFunction.getWeight();
+    public double getWeight(String mWord){
+	return mDictionary.get(mWord);
     }
 }

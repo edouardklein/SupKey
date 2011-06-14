@@ -1,4 +1,9 @@
 package fr.supelec.keyboard;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.HashMap; 
 
 public class Dictionary{
 
@@ -18,7 +23,7 @@ public class Dictionary{
 	     FileInputStream fichier = new FileInputStream(myDictionary);
 	     ObjectInputStream ois = new ObjectInputStream(fichier);
 	     theDictionary = (HashMap<String,Integer>) ois.readObject();
-	     //counter = ??
+	     
 	 }
 	 catch (java.io.IOException e){
 	     e.printStackTrace();
@@ -32,20 +37,19 @@ public class Dictionary{
       * différents threads.
       * Retourne l'instance du singleton.
       */
-     public final synchronized static Dictionary getInstance(int i) {
+     public final synchronized static Dictionary getInstance(int k) {
          if (instance == null) 
-             instance = new Dictionary(i);
+             instance = new Dictionary(k);
          return instance;
      }
 
 
    public void saveDictionnary(){
-	  theDictionnaryOfFrequency.remove("*");
-	  theDictionnaryOfFrequency.put("*",compter);
+	  
 	   try {
-	        FileOutputStream fichier = new FileOutputStream(dictionnaryChose);
+	        FileOutputStream fichier = new FileOutputStream(myDictionary);
 	        ObjectOutputStream oos = new ObjectOutputStream(fichier);
-	        oos.writeObject(theDictionnaryOfFrequency);
+	        oos.writeObject(theDictionary);
 	        oos.flush();
 	        oos.close();
 	      }
@@ -58,9 +62,9 @@ public class Dictionary{
    {
 	try{
 		String wordString=new String(wordStringBuffer);   
-		Integer oldKey=theDictionnaryOfFrequency.get(wordString);
-		theDictionnaryOfFrequency.put(wordString,oldKey+i);
-		compter=compter+i;
+		Integer oldKey=theDictionary.get(wordString);
+		theDictionary.put(wordString,oldKey+i);
+		
 	}
 	catch(java.lang.NullPointerException e){
 		//C'est ici que l'on pourra proposé à notre utilisateur d'entrée un nouveau mot dans le dico.
@@ -73,7 +77,7 @@ public class Dictionary{
    {
     Integer oldKey=theDictionnaryOfFrequency.get(word);
     theDictionnaryOfFrequency.put(word,oldKey+i);
-    compter=compter+i;
+    
    }
 
    

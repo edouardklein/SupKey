@@ -82,7 +82,7 @@ public class SupKey extends InputMethodService
     
     private String mWordSeparators;
     
-    private String[] mDictionary = null;
+    public HashMap mDictionary;
 
     private HashMap mVoisins;
     private ArrayList<String> mList = null;
@@ -146,49 +146,38 @@ public class SupKey extends InputMethodService
         />
 
 
-  // Watch for button clicks.
-    Button button = (Button)findViewById(R.id.dico);
-    button.setOnClickListener(submitListener);
- 
-private OnClickListener submitListener = new OnClickListener() {
-    public void onClick(View v) {
-	setContentView(R.layout.options);
-	
-    }
+	//initialisation du dico
+	mDictionary = new Dictionary(1);
 
 
-	public void mode1 (View myView) {
-	    
-	    //choisir le dico 1
 
-	    
-
-
-	
-	mDictionary = new String[ 4000 ];
 	// will store the words read from the file
-	BufferedReader br = null;
-	int i = 0;
-	try {
+	//BufferedReader br = null;
+	//int i = 0;
+	//try {
 	    // attempt to open the words file
-	    br = new BufferedReader(new InputStreamReader(getAssets().open ("francais.mp3")));
-	    for( i=0; i<4000 ; i++ ){
-		mDictionary[ i ] = br.readLine();
-	    }
-	    Log.d( "SupKey", " dico read" );
-	} catch( IOException e ) {
-	    Log.e("SupKey", "onCreate() error while reading, "+i+" mots lus, "+e.toString());
-	} finally {
-	    try {
+	// br = new BufferedReader(new InputStreamReader(getAssets().open ("francais_stat.mp3")));
+	//  for( i=0; i<4000 ; i++ ){
+	//	mDictionary[ i ] = br.readLine();
+	//  }
+	//  Log.d( "SupKey", " dico read" );
+	//} catch( IOException e ) {
+	//    Log.e("SupKey", "onCreate() error while reading, "+i+" mots lus, "+e.toString());
+	//} finally {
+	//    try {
 		// attempt the close the file
-		br.close();
-	    } catch( IOException ex ) {
-		Log.e("SupKey", "onCreate() while closing");
-	    }
-	}
+	//	br.close();
+	//    } catch( IOException ex ) {
+	//	Log.e("SupKey", "onCreate() while closing");
+	//    }
+	//}
+
+
+
 	// loop and display each word from the words array
 	//for( int i = 0; i < mDictionary.length; i++ )
 	    //Log.d( "SupKey", mDictionary[ i ] );
+
 
 	mVoisins = new HashMap();
 	
@@ -658,7 +647,28 @@ private OnClickListener submitListener = new OnClickListener() {
             return;
         } else if (primaryCode == -6) {
 	    Log.d("SupKey", "On Key : OPTIONS");
+
+
             // Show a menu or somethin'
+
+	    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+	    builder.setMessage("Choisissez le mode :")
+		.setCancelable(false)
+		.setPositiveButton("Mode amis", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int id) {
+			    changeMode(1);
+			    dialog.cancel(); 
+			}
+		    })
+		.setNegativeButton("Mode professionnel", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int id) {
+			    changeMode(2);
+			    dialog.cancel();
+			}
+		    });
+	    AlertDialog alert = builder.create();
+
+
         } else if (primaryCode == Keyboard.KEYCODE_MODE_CHANGE
                 && mInputView != null) {
             Keyboard current = mInputView.getKeyboard();
@@ -675,6 +685,13 @@ private OnClickListener submitListener = new OnClickListener() {
             handleCharacter(primaryCode, keyCodes);
         }
     }
+
+
+    public void changeMode (int i) {
+
+	//choisir le dico i
+	mDictionary=new Dictionary(i);
+	     }
 
     public void onText(CharSequence text) {
 	Log.d("SupKey", "onText()");
@@ -717,11 +734,16 @@ private OnClickListener submitListener = new OnClickListener() {
 		    mList = new ArrayList<String>();
 		    ArrayList<String> suggestions = new ArrayList<String>();
 		    int counter=0;
-		    for( int i = 0; i < mDictionary.length; i++ ){
-			Matcher m = p.matcher(mDictionary[ i ] );
+		    Set elements = mDictionary.keySet();
+
+		    Iterator i=elements.Iterator();
+		  
+		    while(i.hasNext()){
+			String s=i.next();
+			Matcher m = p.matcher(s);
 			//    Log.d( "SupKey", "\t"+mDictionary[ i ] );
 			if( m.find() ){
-			    mList.add( mDictionary[ i ] );
+			    mList.add(s );
 			    //	Log.d( "SupKey", "\t"+"matche !" );
 			    if( counter < 6 ){
 				suggestions.add( mDictionary[ i ] );
