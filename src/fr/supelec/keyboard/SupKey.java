@@ -115,6 +115,55 @@ public class SupKey extends InputMethodService
 	Log.d("SupKey", "onCreate()");
         super.onCreate();
         mWordSeparators = getResources().getString(R.string.word_separators);
+
+
+  <?xml version="1.0" encoding="utf-8"?>
+<!--
+/* 
+**
+** Copyright 2008, The Android Open Source Project
+**
+** Licensed under the Apache License, Version 2.0 (the "License"); 
+** you may not use this file except in compliance with the License. 
+** You may obtain a copy of the License at 
+**
+**     http://www.apache.org/licenses/LICENSE-2.0 
+**
+** Unless required by applicable law or agreed to in writing, software 
+** distributed under the License is distributed on an "AS IS" BASIS, 
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+** See the License for the specific language governing permissions and 
+** limitations under the License.
+*/
+-->
+
+<com.example.android.softkeyboard.LatinKeyboardView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/keyboard"
+        android:layout_alignParentBottom="true"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        />
+
+
+  // Watch for button clicks.
+    Button button = (Button)findViewById(R.id.dico);
+    button.setOnClickListener(submitListener);
+ 
+private OnClickListener submitListener = new OnClickListener() {
+    public void onClick(View v) {
+	setContentView(R.layout.options);
+	
+    }
+
+
+	public void mode1 (View myView) {
+	    
+	    //choisir le dico 1
+
+	    
+
+
 	
 	mDictionary = new String[ 4000 ];
 	// will store the words read from the file
@@ -144,29 +193,29 @@ public class SupKey extends InputMethodService
 	mVoisins = new HashMap();
 	
 	
-	mVoisins.put("q","[aswq]");
-	mVoisins.put("w","[wqase]");
-	mVoisins.put("e","[ewsdr]");
-	mVoisins.put("r","[redft]");
+	mVoisins.put("q","[aswqà]");
+	mVoisins.put("w","[wqaseéèë]");
+	mVoisins.put("e","[ewsdréèë]");
+	mVoisins.put("r","[redftéèë]");
 	mVoisins.put("t","[rtfgy]");
-	mVoisins.put("y","[ytghu]");
-	mVoisins.put("u","[uyhji]");
-	mVoisins.put("i","[iujko]");	
-	mVoisins.put("o","[oiklp]");
-	mVoisins.put("p","[pol]");
-	mVoisins.put("a","[qwasz]");
-	mVoisins.put("s","[weasdzx]");
-	mVoisins.put("d","[ersdfzxc]");
-	mVoisins.put("f","[rtdfgxcv]");
-	mVoisins.put("g","[fghcvbtyu]");
-	mVoisins.put("h","[yuighjvbn]");	
-	mVoisins.put("j","[uiohjqbnm]");
-	mVoisins.put("k","[iopjklnm]");
-	mVoisins.put("l","[opklm]");
-	mVoisins.put("z","[asdzx]");
-	mVoisins.put("x","[sdfzxc]");
-	mVoisins.put("c","[dfgxcv]");
-	mVoisins.put("v","[fghcvb]");
+	mVoisins.put("y","[ytghuù]");
+	mVoisins.put("u","[uyhjiïî]");
+	mVoisins.put("i","[iujkoïîîô]");	
+	mVoisins.put("o","[oiklpôïî]");
+	mVoisins.put("p","[polô]");
+	mVoisins.put("a","[qwaszà]");
+	mVoisins.put("s","[weasdzxéèëà]");
+	mVoisins.put("d","[ersdfzxcéèë]");
+	mVoisins.put("f","[rtdfgxcvç]");
+	mVoisins.put("g","[fghcvbtyuç]");
+	mVoisins.put("h","[yuighjvbnîï]");	
+	mVoisins.put("j","[uiohjqbnmïîô]");
+	mVoisins.put("k","[iopjklnmîïô]");
+	mVoisins.put("l","[opklmô]");
+	mVoisins.put("z","[asdzxà]");
+	mVoisins.put("x","[sdfzxcç]");
+	mVoisins.put("c","[dfgxcvç]");
+	mVoisins.put("v","[fghcvbç]");
 	mVoisins.put("n","[hjkbnm]");
 	mVoisins.put("b","[ghjvbn]");
 	mVoisins.put("m","[jklnm]");
@@ -652,7 +701,7 @@ public class SupKey extends InputMethodService
 		String regexp = "^";
 		String soFar = mComposing.toString();
 		for( int k=0; k<soFar.length();k++){
-		    char c = soFar.charAt(k);
+		    char c = toLowerCase(soFar.charAt(k));
 		    String key = Character.toString(c);
 		    Log.d( "SupKey", "\t Key is"+ key );
 		    if( mVoisins.containsKey( key )){
@@ -884,4 +933,11 @@ public class SupKey extends InputMethodService
     public void onRelease(int primaryCode) {
 	Log.d("SupKey", "onRelease()");	
     }
+
+
+
+
+
+
+
 }
